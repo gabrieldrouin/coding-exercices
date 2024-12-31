@@ -25,20 +25,6 @@ def buildList(values, pos):
         
 class Solution:
     def hasCycle(self, head: Optional[ListNode]) -> bool:
-        if not head:
-            return False
-
-        curr = head
-        prev = curr
-
-        while True:
-            curr = curr.next
-            if not curr:
-                return False
-            if curr.val == "x":
-                return True
-            prev.val = "x"
-            prev = curr
 
         
 
