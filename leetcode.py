@@ -1,21 +1,51 @@
-from typing import List
+from collections import deque
+from typing import Optional
 
-class Interval(object):
-    def __init__(self, start, end):
-        self.start = start
-        self.end = end
+class ListNode:
+    def __init__(self, val):
+        self.val = val
+        self.next: ListNode = None
 
-def t_to_i(tuple_list: List[tuple]) -> List[Interval]:
-    return [Interval(start, end) for start, end in tuple_list]
-    return [(interval.start, interval.end) for interval in interval_list]
-
-class Solution:
-    def canAttendMeetings(self, intervals: List[Interval]) -> bool:
+def buildList(values, pos):
+    if not values:
+        return None
+    
+    # Create nodes
+    nodes = [ListNode(val) for val in values]
+    
+    # Link nodes
+    for i in range(len(nodes) - 1):
+        nodes[i].next = nodes[i + 1]
+    
+    # Create cycle if pos is valid
+    if pos >= 0 and pos < len(nodes):
+        nodes[-1].next = nodes[pos]
+    
+    return nodes[0]
         
+class Solution:
+    def hasCycle(self, head: Optional[ListNode]) -> bool:
+        if not head:
+            return False
+
+        curr = head
+        prev = curr
+
+        while True:
+            curr = curr.next
+            if not curr:
+                return False
+            if curr.val == "x":
+                return True
+            prev.val = "x"
+            prev = curr
+
         
 
 sol = Solution()
-sf = t_to_i([(0,30),(5,10),(15,20)])
-st = t_to_i([(5,8),(9,15)])
-print(sol.canAttendMeetings(sf))
-print(sol.canAttendMeetings(st))
+head1 = buildList([3,2,0,-4], 1)
+head2 = buildList([1, 2], 0)
+head3 = buildList([1], -1)
+print(sol.hasCycle(head1))
+print(sol.hasCycle(head2))
+print(sol.hasCycle(head3))
