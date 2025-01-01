@@ -1,37 +1,76 @@
 from collections import deque
-from typing import Optional
+from typing import List, Optional
 
-class ListNode:
-    def __init__(self, val):
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
         self.val = val
-        self.next: ListNode = None
-
-def buildList(values, pos):
-    if not values:
+        self.left = left
+        self.right = right
+        
+def buildTree(nums):
+    if not nums:
         return None
-    
-    # Create nodes
-    nodes = [ListNode(val) for val in values]
-    
-    # Link nodes
-    for i in range(len(nodes) - 1):
-        nodes[i].next = nodes[i + 1]
-    
-    # Create cycle if pos is valid
-    if pos >= 0 and pos < len(nodes):
-        nodes[-1].next = nodes[pos]
-    
-    return nodes[0]
-        
-class Solution:
-    def hasCycle(self, head: Optional[ListNode]) -> bool:
+    root = TreeNode(nums[0])
+    queue = [root]
+    i = 1
+    while queue and i < len(nums):
+        node = queue.pop(0)
+        if i < len(nums):
+            node.left = TreeNode(nums[i])
+            queue.append(node.left)
+            i += 1
+        if i < len(nums):
+            node.right = TreeNode(nums[i])
+            queue.append(node.right)
+            i += 1
+    return root
+def treeToArray(root):
+    if not root:
+       return []
+    result = []
+    queue = [root]
+    while queue:
+       node = queue.pop(0)
+       result.append(node.val)
+       
+       if node.left:
+           queue.append(node.left)
+       if node.right:
+           queue.append(node.right)    
+    return result
 
-        
+class Solution:
+    def isSameTree(self, p: Optional[TreeNode], q: Optional[TreeNode]) -> bool:
+        p_queue: List[TreeNode] = []
+        q_queue: List[TreeNode] = []
+
+        p_queue.append(p)
+        q_queue.append(q)
+
+        while p_queue and q_queue:
+            p_node = p_queue.pop()
+            q_node = q_queue.pop()
+
+            if not p_node and not q_node:
+                continue
+            if not p_node or not q_node or p_node.val != q_node.val:
+                return False
+            
+            p_queue.append(p_node.left)
+            p_queue.append(p_node.right)
+            q_queue.append(q_node.left)
+            q_queue.append(q_node.right)
+
+        return True
+            
+
+
+
 
 sol = Solution()
-head1 = buildList([3,2,0,-4], 1)
-head2 = buildList([1, 2], 0)
-head3 = buildList([1], -1)
-print(sol.hasCycle(head1))
-print(sol.hasCycle(head2))
-print(sol.hasCycle(head3))
+p1 = buildTree([1,2,3])
+q1 = buildTree([1,2,3])
+p2 = buildTree([1,2,1])
+q2 = buildTree([1,1,2])
+print(sol.isSameTree(p1,q1))
+print(sol.isSameTree(p2,q2))
